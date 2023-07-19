@@ -2,17 +2,17 @@ import pygame
 import random
 import os
 
-
 # Inicialização do Pygame
 pygame.init()
 
 # Definição das cores
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
-
+GREEN = (0, 255, 0)  
+RED = (255, 0, 0)
 # Configurações da janela
-WIDTH = 800
-HEIGHT = 600
+WIDTH = 960
+HEIGHT = 540
 window = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Jogo de Destruir Naves")
 
@@ -21,7 +21,7 @@ game_folder = os.path.dirname(os.path.abspath(__file__))
 img_folder = os.path.join(game_folder, "assets")
 
 background_img = pygame.image.load(
-    os.path.join(img_folder, "background.png")).convert()
+    os.path.join(img_folder, "background.jpeg")).convert()
 ship_img = pygame.image.load(os.path.join(
     img_folder, "spaceship.png")).convert_alpha()
 enemy_img = pygame.image.load(os.path.join(
@@ -37,8 +37,23 @@ life_bonus_img = pygame.image.load(os.path.join(
 speed_bonus_img = pygame.image.load(os.path.join(
     img_folder, "speed-bonus.png")).convert_alpha()
 life_img = pygame.transform.scale(life_img, (24, 24))
-enemy_img = pygame.transform.scale(enemy_img, (100, 100))
-background_img = pygame.transform.scale(background_img, (800, 600))
+background_img = pygame.transform.scale(background_img, (960, 540))
+
+# Variáveis para as quests
+
+ship_update = False
+high_score_quest = False
+total_score_quest = False
+reach_max_level_quest = False
+consecutive_hits_quest = False
+eliminate_enemies_quest = False
+
+# Variável para contagem de tiros consecutivos acertados
+consecutive_hits = 0
+speed_x_var = 3
+
+
+# Velocidade d
 
 # Classe para representar a nave
 
@@ -58,7 +73,8 @@ class Ship(pygame.sprite.Sprite):
         self.level = 1
         self.shoot_delay = 500  # Tempo entre os disparos em milissegundos
         self.last_shot_time = pygame.time.get_ticks()
-        self.shoot_multiplier = 1.0  # Multiplicador de velocidade dos disparosf
+        self.shoot_multiplier = 1.0  # Multiplicador de velocidade dos disparos
+
 
     def update(self):
         self.rect.x += self.speed_x
@@ -137,8 +153,9 @@ class Enemy(pygame.sprite.Sprite):
             self.speed_y = random.randrange(1, 8)
             self.speed_x = random.randrange(-2, 2)
 
-
 # Classe para representar os bônus
+
+
 class Bonus(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
@@ -162,8 +179,9 @@ class Bonus(pygame.sprite.Sprite):
             return self.type
         return None
 
-
 # Classe para representar as vidas extras
+
+
 class Life(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
@@ -196,13 +214,79 @@ score = 0
 lives_count = 3
 enemy_speed = 10  # Velocidade de queda inicial dos inimigos
 enemy_count = 3  # Quantidade inicial de inimigos
+level = 1
+enemy_dead = 0
+
+
+# Função para criar inimigos
+
+
+def create_enemies():
+    for _ in range(enemy_count):
+        enemy = Enemy()
+        all_sprites.add(enemy)
+        enemies.add(enemy)
+
+# Função para aumentar a dificuldade
+
+
+def increase_difficulty():
+    global enemy_speed, enemy_count, level
+    enemy_speed += 2
+    enemy_count += 1
+    level += 1
 
 
 # Adicionar inimigos
-for _ in range(enemy_count):
-    enemy = Enemy()
-    all_sprites.add(enemy)
-    enemies.add(enemy)
+create_enemies()
+
+
+
+# Função para renderizar texto na tela
+def draw_text(surface, text, size, x, y, color):
+    font = pygame.font.Font(None, size)
+    text_surface = font.render(text, True, color)
+    text_rect = text_surface.get_rect()
+    text_rect.topleft = (x, y)
+    surface.blit(text_surface, text_rect)
+
+# Função para verificar e atualizar o progresso das quests
+def update_quests(lives_count):
+    global total_score_quest, eliminate_enemies_quest, reach_max_level_quest, consecutive_hits_quest, high_score_quest, consecutive_hits
+
+    # Quest de pontuação total
+    if score >= 500 and not total_score_quest:
+        lives_count += 1
+        total_score_quest = True
+
+    # Quest de eliminar inimigos
+    if enemy_dead >= 50 and not eliminate_enemies_quest:
+        player.shoot_multiplier = 0.4
+        eliminate_enemies_quest = True
+
+    # Quest de alcançar o nível má ximo
+    if level >= 3 and not reach_max_level_quest:
+        speed_x_var = 8
+        reach_max_level_quest = True
+
+    # Quest de acertar tiros em sequência
+    if consecutive_hits >= 25 and not consecutive_hits_quest:
+        player.shoot_delay = 200
+        consecutive_hits_quest = True
+
+    # Quest de alcançar uma pontuação elevada
+    if score >= 1000 and not high_score_quest:
+        # Desbloquear nova nave espacial com habilidades especiais
+        player.image = pygame.transform.scale(pygame.image.load(
+            os.path.join(img_folder, "spaceship2.png")).convert_alpha(), (40, 40))
+        ship_update = True
+        player.speed_x = 15
+        player.shoot_multiplier = 0.5
+        increase_difficulty()
+        create_enemies()
+        high_score_quest = True
+
+    return lives_count
 
 # Loop principal do jogo
 running = True
@@ -232,9 +316,9 @@ while running:
             running = False
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
-                player.speed_x = -5
+                player.speed_x = -speed_x_var
             elif event.key == pygame.K_RIGHT:
-                player.speed_x = 5
+                player.speed_x = speed_x_var
             elif event.key == pygame.K_SPACE:
                 player.shooting = True
             elif event.key == pygame.K_ESCAPE:
@@ -250,11 +334,19 @@ while running:
     # Atualizar sprites
     all_sprites.update()
 
-    if score > 10:
-        enemy_count += 5
-        score = 0
+    if score > 10 and level == 1:
+        increase_difficulty()
+        create_enemies()
+        enemy_img = pygame.image.load(os.path.join(
+            img_folder, "enemy2.png")).convert_alpha()
 
-    if random.random() < 0.0002:
+    if score > 20 and level == 2:
+        increase_difficulty()
+        create_enemies()
+        enemy_img = pygame.image.load(os.path.join(
+            img_folder, "enemy3.png")).convert_alpha()
+        
+    if random.random() < 0.0:
         bonus = Bonus()
         all_sprites.add(bonus)
         bonuses.add(bonus)
@@ -268,11 +360,17 @@ while running:
     # Verificar colisões dos projéteis com os inimigos
     hits = pygame.sprite.groupcollide(enemies, bullets, True, True)
     for hit in hits:
+        # Incrementar a contagem de tiros consecutivos acertados quando o jogador eliminar um inimigo
+        consecutive_hits += 1
+        # Restaurar o multiplicador de disparo após acertar 10 tiros consecutivos
+        if consecutive_hits >= 10:
+            player.shoot_multiplier = 1.0
+
+        enemy_dead += 1
         score += 10
         enemy = Enemy()
         all_sprites.add(enemy)
         enemies.add(enemy)
-        0
 
     # Verificar colisões do jogador com os inimigos
     hits = pygame.sprite.spritecollide(
@@ -285,6 +383,7 @@ while running:
             player.is_invulnerable = True
             player.invincible_timer = pygame.time.get_ticks()
             player.rect.centerx = WIDTH // 2
+
             player.rect.bottom = HEIGHT - 10
 
     # Verificar colisões do jogador com os bônus
@@ -299,6 +398,10 @@ while running:
         life = Life()
         lives.add(life)
 
+    # Atualizar quests
+    lives_count = update_quests(lives_count)
+
+
     # Limpar a tela
     window.blit(background_img, (0, 0))
 
@@ -306,16 +409,46 @@ while running:
     all_sprites.draw(window)
 
     # Desenhar texto
-    font = pygame.font.Font(None, 36)
+    draw_text(window, "Score: " + str(score), 20, 10, 10, WHITE)
+    draw_text(window, "Nível: " + str(level), 20, 10, 30, WHITE)
+    draw_text(window, "Inimigos Mortos: " + str(enemy_dead), 20, 10, 50, WHITE)
+
+    # Informações sobre as quests
+    draw_text(window, "Quests:", 24, 10, 100, WHITE)
+    draw_text(window, "Pontuação total de 500 pontos:", 20, 10, 120, GREEN if total_score_quest else RED)
+    draw_text(window, "Eliminar 50 inimigos:", 20, 10, 140, GREEN if eliminate_enemies_quest else RED)
+    draw_text(window, "Alcançar o nível 3:", 20, 10, 160, GREEN if reach_max_level_quest else RED)
+    draw_text(window, "Acertar 25 tiros:", 20, 10, 180, GREEN if consecutive_hits_quest else RED)
+    draw_text(window, "Alcançar uma pontuação de 1000 pontos:", 20, 10, 200, GREEN if high_score_quest else RED)
+
+    if(ship_update):
+        draw_text(window, "Upgrade da Nave", 20, 10, 220, GREEN)
+    
+    
+
+    # Desenhar texto
+    font = pygame.font.Font(None, 20)
     score_text = font.render("Score: " + str(score), True, WHITE)
     score_rect = score_text.get_rect()
     score_rect.topleft = (10, 10)
     window.blit(score_text, score_rect)
 
+    level_text = font.render("Nível: " + str(level), True, WHITE)
+    level_rect = level_text.get_rect()
+    level_rect.topleft = (10, 30)
+    window.blit(level_text, level_rect)
+
+    enemys_dead_text = font.render(
+        "Inimigos Mortos: " + str(enemy_dead), True, WHITE)
+    enemys_dead_rect = enemys_dead_text.get_rect()
+    enemys_dead_rect.topleft = (10, 50)
+    window.blit(enemys_dead_text, enemys_dead_rect)
+
     for i in range(lives_count):
+        life_img = pygame.transform.scale(life_img, (20, 20))
         life_rect = life_img.get_rect()
         life_rect.x = 10 + (30 * i)
-        life_rect.y = 60
+        life_rect.y = 70
         window.blit(life_img, life_rect)
 
     # Atualizar tela
