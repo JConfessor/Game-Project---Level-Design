@@ -458,6 +458,7 @@ while running:
     draw_text(window, "Score: " + str(score), 20, 10, 10, WHITE)
     draw_text(window, "Nível: " + str(level), 20, 10, 30, WHITE)
     draw_text(window, "Inimigos Mortos: " + str(enemy_dead), 20, 10, 50, WHITE)
+    draw_text(window, "Aperte P para pausar.", 20, WIDTH-250, 10, WHITE)
 
 
 
