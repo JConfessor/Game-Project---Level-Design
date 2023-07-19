@@ -25,3 +25,5 @@ O objetivo é sobreviver o máximo possível, eliminar inimigos e alcançar uma 
 
 Divirta-se jogando e boa sorte!
 ![image](https://github.com/JConfessor/Game-Project---Level-Design/assets/44590064/623c3054-2f96-4fe9-b80e-7fecfb7c4e2f)
+
+![image](https://github.com/JConfessor/Game-Project---Level-Design/assets/44590064/be5f6ac1-a498-4e66-bd52-e71c29e3bb12)
