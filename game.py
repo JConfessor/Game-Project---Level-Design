@@ -331,14 +331,14 @@ while running:
     # Atualizar sprites
     all_sprites.update()
 
-    if score > 10 and level == 1:
+    if score > 500 and level == 1:
         speed_x_var = 7
         increase_difficulty()
         create_enemies()
         enemy_img = pygame.image.load(os.path.join(
             img_folder, "enemy2.png")).convert_alpha()
 
-    if score > 20 and level == 2:
+    if score > 1500 and level == 2:
         speed_x_var = 9
         increase_difficulty()
         create_enemies()
