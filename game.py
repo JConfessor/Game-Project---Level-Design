@@ -53,8 +53,6 @@ consecutive_hits = 0
 speed_x_var = 3
 
 
-# Velocidade d
-
 # Classe para representar a nave
 
 
@@ -266,7 +264,6 @@ def update_quests(lives_count):
 
     # Quest de alcançar o nível má ximo
     if level >= 3 and not reach_max_level_quest:
-        speed_x_var = 8
         reach_max_level_quest = True
 
     # Quest de acertar tiros em sequência
@@ -335,12 +332,14 @@ while running:
     all_sprites.update()
 
     if score > 10 and level == 1:
+        speed_x_var = 7
         increase_difficulty()
         create_enemies()
         enemy_img = pygame.image.load(os.path.join(
             img_folder, "enemy2.png")).convert_alpha()
 
     if score > 20 and level == 2:
+        speed_x_var = 9
         increase_difficulty()
         create_enemies()
         enemy_img = pygame.image.load(os.path.join(
