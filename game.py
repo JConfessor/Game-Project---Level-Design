@@ -14,6 +14,7 @@ RED = (255, 0, 0)
 # Cor de fundo transparente
 PAUSE_BACKGROUND_COLOR = (0, 0, 0, 1.7)
 
+
 # Configurações da janela
 WIDTH = 960
 HEIGHT = 540
@@ -246,7 +247,7 @@ create_enemies()
 
 # Função para renderizar texto na tela
 def draw_text(surface, text, size, x, y, color):
-    font = pygame.font.Font(None, size)
+    font = pygame.font.SysFont("couriernew", size)
     text_surface = font.render(text, True, color)
     text_rect = text_surface.get_rect()
     text_rect.topleft = (x, y)
@@ -276,7 +277,7 @@ def update_quests(lives_count):
         consecutive_hits_quest = True
 
     # Quest de alcançar uma pontuação elevada
-    if score >= 200 and not high_score_quest:
+    if score >= 1000 and not high_score_quest:
         # Desbloquear nova nave espacial com habilidades especiais
         player.image = pygame.transform.scale(pygame.image.load(
             os.path.join(img_folder, "spaceship2.png")).convert_alpha(), (40, 40))
@@ -294,7 +295,7 @@ running = True
 clock = pygame.time.Clock()
 
 # Define the font
-font = pygame.font.Font(None, 36)
+font = pygame.font.SysFont("couriernew", 36)
 
 # Tela de "Jogar"
 start_text = font.render("Pressione ESPAÇO para jogar", True, WHITE)
@@ -357,18 +358,19 @@ while running:
 
             # Desenhar tela de pausa (pode ser personalizado para melhor aparência)
             window.blit(pause_surface, (0, 0))
-            draw_text(window, "PAUSA", 50, (WIDTH // 2) - 45, (HEIGHT // 2)- 200, WHITE)
+            draw_text(window, "PAUSA", 50, (WIDTH // 2) - 75, (HEIGHT // 2)- 200, WHITE)
+
 
 
             # Informações sobre as quests
-            draw_text(window, "Quests:", 35, (WIDTH // 2) - 35, (HEIGHT // 2)- 130, WHITE)
-            draw_text(window, "- Pontuação total de 500 pontos: Ganhe uma vida extra.", 25, (WIDTH // 2) - 200, (HEIGHT // 2)- 80, GREEN if total_score_quest else RED)
-            draw_text(window, "- Eliminar 50 inimigos: Ganhe bonus de disparo", 25, (WIDTH // 2) - 200, (HEIGHT // 2)- 60, GREEN if eliminate_enemies_quest else RED)
-            draw_text(window, "- Alcançar o nível 3: Ganhe turbo na sua nave",25, (WIDTH // 2) - 200, (HEIGHT // 2)- 40, GREEN if reach_max_level_quest else RED)
-            draw_text(window, "- Acertar 25 tiros: Aumente a velocidade de disparos", 25, (WIDTH // 2) - 200, (HEIGHT // 2)- 20, GREEN if consecutive_hits_quest else RED)
-            draw_text(window, "- Alcançar uma pontuação de 1000 pontos: Ative o upgrade da nave.", 25, (WIDTH // 2) - 200, (HEIGHT // 2), GREEN if high_score_quest else RED)
+            draw_text(window, "Quests:", 35, (WIDTH // 2) - 70, (HEIGHT // 2)- 120, WHITE)
+            draw_text(window, "- Pontuação total de 500 pontos: Ganhe uma vida extra.", 20, 50, (HEIGHT // 2)- 40, GREEN if total_score_quest else RED)
+            draw_text(window, "- Eliminar 50 inimigos: Ganhe bonus de disparo", 20, 50, (HEIGHT // 2)- 20, GREEN if eliminate_enemies_quest else RED)
+            draw_text(window, "- Alcançar o nível 3: Ganhe turbo na sua nave", 20, 50, (HEIGHT // 2), GREEN if reach_max_level_quest else RED)
+            draw_text(window, "- Acertar 25 tiros: Aumente a velocidade de disparos", 20, 50, (HEIGHT // 2)+ 20, GREEN if consecutive_hits_quest else RED)
+            draw_text(window, "- Alcançar uma pontuação de 1000 pontos: Ative o upgrade da nave.", 20, 50, (HEIGHT // 2)+40, GREEN if high_score_quest else RED)
             if(ship_update):
-                draw_text(window, "- Upgrade da Nave",25, (WIDTH // 2) - 200, (HEIGHT // 2)+20, GREEN)
+                draw_text(window, "- Upgrade da Nave", 50, (HEIGHT // 2) + 20, (HEIGHT // 2) - 120, GREEN)
             pygame.display.flip()
             clock.tick(60)
             
@@ -463,7 +465,7 @@ while running:
         draw_text(window, "Upgrade da Nave", 20, 10, 220, GREEN)
     
     # Desenhar texto
-    font = pygame.font.Font(None, 20)
+    font = pygame.font.SysFont("couriernew", 20)
     score_text = font.render("Score: " + str(score), True, WHITE)
     score_rect = score_text.get_rect()
     score_rect.topleft = (10, 10)
@@ -484,7 +486,7 @@ while running:
         life_img = pygame.transform.scale(life_img, (20, 20))
         life_rect = life_img.get_rect()
         life_rect.x = 10 + (30 * i)
-        life_rect.y = 70
+        life_rect.y = 80
         window.blit(life_img, life_rect)
 
     # Atualizar tela
