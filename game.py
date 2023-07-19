@@ -10,6 +10,10 @@ BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 GREEN = (0, 255, 0)  
 RED = (255, 0, 0)
+
+# Cor de fundo transparente
+PAUSE_BACKGROUND_COLOR = (0, 0, 0, 1.7)
+
 # Configurações da janela
 WIDTH = 960
 HEIGHT = 540
@@ -250,7 +254,7 @@ def draw_text(surface, text, size, x, y, color):
 
 # Função para verificar e atualizar o progresso das quests
 def update_quests(lives_count):
-    global total_score_quest, eliminate_enemies_quest, reach_max_level_quest, consecutive_hits_quest, high_score_quest, consecutive_hits
+    global total_score_quest, eliminate_enemies_quest, reach_max_level_quest, consecutive_hits_quest, high_score_quest, consecutive_hits, speed_x_var, ship_update
 
     # Quest de pontuação total
     if score >= 500 and not total_score_quest:
@@ -277,7 +281,7 @@ def update_quests(lives_count):
         player.image = pygame.transform.scale(pygame.image.load(
             os.path.join(img_folder, "spaceship2.png")).convert_alpha(), (40, 40))
         ship_update = True
-        player.speed_x = 15
+        speed_x_var = 12
         player.shoot_multiplier = 0.5
         increase_difficulty()
         create_enemies()
@@ -303,8 +307,13 @@ pygame.display.flip()
 start = False
 while not start:
     for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            start = True
+            running = False
         if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
             start = True
+# Variável para controle de pausa
+paused = False
 
 while running:
     # Capturar eventos
@@ -320,13 +329,39 @@ while running:
                 player.shooting = True
             elif event.key == pygame.K_ESCAPE:
                 running = False
-        elif event.type == pygame.KEYUP:
-            if event.key == pygame.K_LEFT and player.speed_x < 0:
-                player.speed_x = 0
-            elif event.key == pygame.K_RIGHT and player.speed_x > 0:
-                player.speed_x = 0
-            elif event.key == pygame.K_SPACE:
-                player.shooting = False
+            elif event.key == pygame.K_p:  # Tecla "P" para pausar/despausar o jogo
+                paused = not paused
+
+    if paused:
+        # Loop de pausa
+        while paused:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+                    paused = False
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_p:  # Tecla "P" para sair do modo de pausa
+                        paused = False
+
+            # Criar uma superfície com fundo transparente
+            pause_surface = pygame.Surface((WIDTH, HEIGHT))
+            pause_surface.fill(PAUSE_BACKGROUND_COLOR)
+
+            # Desenhar tela de pausa (pode ser personalizado para melhor aparência)
+            window.blit(pause_surface, (0, 0))
+            draw_text(window, "PAUSA", 50, (WIDTH // 2) - 45, (HEIGHT // 2)- 200, WHITE)
+
+
+            # Informações sobre as quests
+            draw_text(window, "Quests:", 35, (WIDTH // 2) - 35, (HEIGHT // 2)- 130, WHITE)
+            draw_text(window, "- Pontuação total de 500 pontos: Ganhe uma vida extra.", 25, (WIDTH // 2) - 100, (HEIGHT // 2)- 80, GREEN if total_score_quest else RED)
+            draw_text(window, "- Eliminar 50 inimigos: Ganhe bonus de disparo", 25, (WIDTH // 2) - 100, (HEIGHT // 2)- 60, GREEN if eliminate_enemies_quest else RED)
+            draw_text(window, "- Alcançar o nível 3: Ganhe turbo na sua nave",25, (WIDTH // 2) - 100, (HEIGHT // 2)- 40, GREEN if reach_max_level_quest else RED)
+            draw_text(window, "- Acertar 25 tiros: Aumente a velocidade de disparos", 25, (WIDTH // 2) - 100, (HEIGHT // 2)- 20, GREEN if consecutive_hits_quest else RED)
+            draw_text(window, "- Alcançar uma pontuação de 1000 pontos:", 25, (WIDTH // 2) - 100, (HEIGHT // 2), GREEN if high_score_quest else RED)
+            pygame.display.flip()
+            clock.tick(60)
+            
 
     # Atualizar sprites
     all_sprites.update()
@@ -412,19 +447,11 @@ while running:
     draw_text(window, "Nível: " + str(level), 20, 10, 30, WHITE)
     draw_text(window, "Inimigos Mortos: " + str(enemy_dead), 20, 10, 50, WHITE)
 
-    # Informações sobre as quests
-    draw_text(window, "Quests:", 24, 10, 100, WHITE)
-    draw_text(window, "Pontuação total de 500 pontos:", 20, 10, 120, GREEN if total_score_quest else RED)
-    draw_text(window, "Eliminar 50 inimigos:", 20, 10, 140, GREEN if eliminate_enemies_quest else RED)
-    draw_text(window, "Alcançar o nível 3:", 20, 10, 160, GREEN if reach_max_level_quest else RED)
-    draw_text(window, "Acertar 25 tiros:", 20, 10, 180, GREEN if consecutive_hits_quest else RED)
-    draw_text(window, "Alcançar uma pontuação de 1000 pontos:", 20, 10, 200, GREEN if high_score_quest else RED)
+
 
     if(ship_update):
         draw_text(window, "Upgrade da Nave", 20, 10, 220, GREEN)
     
-    
-
     # Desenhar texto
     font = pygame.font.Font(None, 20)
     score_text = font.render("Score: " + str(score), True, WHITE)
