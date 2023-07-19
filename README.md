@@ -24,3 +24,4 @@ O jogo é pausado pressionando a tecla "P", e o jogador pode continuar a jogar a
 O objetivo é sobreviver o máximo possível, eliminar inimigos e alcançar uma pontuação alta, desafiando-se a cumprir as quests para desbloquear bônus e melhorias.
 
 Divirta-se jogando e boa sorte!
+![image](https://github.com/JConfessor/Game-Project---Level-Design/assets/44590064/623c3054-2f96-4fe9-b80e-7fecfb7c4e2f)
