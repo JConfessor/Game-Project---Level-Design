@@ -266,7 +266,7 @@ def update_quests(lives_count):
         player.shoot_multiplier = 0.4
         eliminate_enemies_quest = True
 
-    # Quest de alcançar o nível má ximo
+    # Quest de alcançar o nível máximo
     if level >= 3 and not reach_max_level_quest:
         reach_max_level_quest = True
 
@@ -276,7 +276,7 @@ def update_quests(lives_count):
         consecutive_hits_quest = True
 
     # Quest de alcançar uma pontuação elevada
-    if score >= 1000 and not high_score_quest:
+    if score >= 200 and not high_score_quest:
         # Desbloquear nova nave espacial com habilidades especiais
         player.image = pygame.transform.scale(pygame.image.load(
             os.path.join(img_folder, "spaceship2.png")).convert_alpha(), (40, 40))
@@ -331,6 +331,14 @@ while running:
                 running = False
             elif event.key == pygame.K_p:  # Tecla "P" para pausar/despausar o jogo
                 paused = not paused
+        elif event.type == pygame.KEYUP:
+            if event.key == pygame.K_LEFT and player.speed_x < 0:
+                player.speed_x = 0
+            elif event.key == pygame.K_RIGHT and player.speed_x > 0:
+                player.speed_x = 0
+            elif event.key == pygame.K_SPACE:
+                player.shooting = False
+
 
     if paused:
         # Loop de pausa
@@ -354,11 +362,13 @@ while running:
 
             # Informações sobre as quests
             draw_text(window, "Quests:", 35, (WIDTH // 2) - 35, (HEIGHT // 2)- 130, WHITE)
-            draw_text(window, "- Pontuação total de 500 pontos: Ganhe uma vida extra.", 25, (WIDTH // 2) - 100, (HEIGHT // 2)- 80, GREEN if total_score_quest else RED)
-            draw_text(window, "- Eliminar 50 inimigos: Ganhe bonus de disparo", 25, (WIDTH // 2) - 100, (HEIGHT // 2)- 60, GREEN if eliminate_enemies_quest else RED)
-            draw_text(window, "- Alcançar o nível 3: Ganhe turbo na sua nave",25, (WIDTH // 2) - 100, (HEIGHT // 2)- 40, GREEN if reach_max_level_quest else RED)
-            draw_text(window, "- Acertar 25 tiros: Aumente a velocidade de disparos", 25, (WIDTH // 2) - 100, (HEIGHT // 2)- 20, GREEN if consecutive_hits_quest else RED)
-            draw_text(window, "- Alcançar uma pontuação de 1000 pontos:", 25, (WIDTH // 2) - 100, (HEIGHT // 2), GREEN if high_score_quest else RED)
+            draw_text(window, "- Pontuação total de 500 pontos: Ganhe uma vida extra.", 25, (WIDTH // 2) - 200, (HEIGHT // 2)- 80, GREEN if total_score_quest else RED)
+            draw_text(window, "- Eliminar 50 inimigos: Ganhe bonus de disparo", 25, (WIDTH // 2) - 200, (HEIGHT // 2)- 60, GREEN if eliminate_enemies_quest else RED)
+            draw_text(window, "- Alcançar o nível 3: Ganhe turbo na sua nave",25, (WIDTH // 2) - 200, (HEIGHT // 2)- 40, GREEN if reach_max_level_quest else RED)
+            draw_text(window, "- Acertar 25 tiros: Aumente a velocidade de disparos", 25, (WIDTH // 2) - 200, (HEIGHT // 2)- 20, GREEN if consecutive_hits_quest else RED)
+            draw_text(window, "- Alcançar uma pontuação de 1000 pontos: Ative o upgrade da nave.", 25, (WIDTH // 2) - 200, (HEIGHT // 2), GREEN if high_score_quest else RED)
+            if(ship_update):
+                draw_text(window, "- Upgrade da Nave",25, (WIDTH // 2) - 200, (HEIGHT // 2)+20, GREEN)
             pygame.display.flip()
             clock.tick(60)
             
@@ -485,3 +495,4 @@ while running:
 
 # Encerrar o Pygame
 pygame.quit()
+
