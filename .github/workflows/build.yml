@@ -1,0 +1,70 @@
+name: Build Workflow
+
+on:
+  push:
+    branches:
+      - '*'
+
+jobs:
+  build-windows:
+    runs-on: windows-2019
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Get latest commit details
+        id: commit
+        run: |
+          $COMMIT_HASH = git rev-parse HEAD
+          $COMMIT_MESSAGE = git log -1 --format=%s
+          $COMMIT_DESCRIPTION = git log -1 --format=%b
+          echo "::set-output name=hash::$COMMIT_HASH"
+          echo "::set-output name=message::$COMMIT_MESSAGE"
+          echo "::set-output name=description::$COMMIT_DESCRIPTION"
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12.3'
+          architecture: 'x64'
+
+      - name: Install requirements
+        run: |
+          pip install -r requirements.txt
+          
+      - name: Uninstall pathlib
+        run: |
+          python -m pip uninstall -y pathlib
+
+      - name: Run PyInstaller
+        run: |
+          python -m PyInstaller main.spec
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: Game
+          path: dist/Game.exe
+
+      - name: Create release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GAME }}
+        with:
+          tag_name: ${{ steps.commit.outputs.message }}
+          release_name: ${{ steps.commit.outputs.message }}
+          body: |
+            ${{ steps.commit.outputs.description }}
+          draft: false
+          prerelease: false
+
+      - name: Upload Release Asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GAME }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: dist/Game.exe
+          asset_name: Game.exe
+          asset_content_type: application/octet-stream

@@ -1,0 +1,542 @@
+[
+    {
+        "label": "pygame",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "pygame",
+        "description": "pygame",
+        "detail": "pygame",
+        "documentation": {}
+    },
+    {
+        "label": "random",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "random",
+        "description": "random",
+        "detail": "random",
+        "documentation": {}
+    },
+    {
+        "label": "os",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "os",
+        "description": "os",
+        "detail": "os",
+        "documentation": {}
+    },
+    {
+        "label": "Ship",
+        "kind": 6,
+        "importPath": "game",
+        "description": "game",
+        "peekOfCode": "class Ship(pygame.sprite.Sprite):\n    def __init__(self):\n        super().__init__()\n        self.image = pygame.transform.scale(ship_img, (40, 40))\n        self.rect = self.image.get_rect()\n        self.rect.centerx = WIDTH // 2\n        self.rect.bottom = HEIGHT - 10\n        self.speed_x = 0\n        self.is_invulnerable = False\n        self.invincible_timer = pygame.time.get_ticks()",
+        "detail": "game",
+        "documentation": {}
+    },
+    {
+        "label": "Bullet",
+        "kind": 6,
+        "importPath": "game",
+        "description": "game",
+        "peekOfCode": "class Bullet(pygame.sprite.Sprite):\n    def __init__(self, x, y):\n        super().__init__()\n        self.image = pygame.transform.scale(bullet_img, (16, 16))\n        self.rect = self.image.get_rect()\n        self.rect.centerx = x\n        self.rect.bottom = y\n        self.speed_y = -10\n    def update(self):\n        self.rect.y += self.speed_y",
+        "detail": "game",
+        "documentation": {}
+    },
+    {
+        "label": "Enemy",
+        "kind": 6,
+        "importPath": "game",
+        "description": "game",
+        "peekOfCode": "class Enemy(pygame.sprite.Sprite):\n    def __init__(self):\n        super().__init__()\n        self.image = pygame.transform.scale(enemy_img, (30, 30))\n        self.rect = self.image.get_rect()\n        self.rect.x = random.randrange(0, WIDTH - self.rect.width)\n        self.rect.y = random.randrange(-100, -40)\n        self.speed_y = random.randrange(1, 5)\n        self.speed_x = random.randrange(-1, 1)\n    def update(self):",
+        "detail": "game",
+        "documentation": {}
+    },
+    {
+        "label": "Bonus",
+        "kind": 6,
+        "importPath": "game",
+        "description": "game",
+        "peekOfCode": "class Bonus(pygame.sprite.Sprite):\n    def __init__(self):\n        super().__init__()\n        self.type = random.choice(['speed'])\n        if self.type == 'speed':\n            self.image = pygame.transform.scale(speed_bonus_img, (24, 24))\n        self.rect = self.image.get_rect()\n        self.rect.x = random.randrange(WIDTH - self.rect.width)\n        self.rect.y = random.randrange(-100, -40)\n        self.speed_y = random.randrange(1, 4)",
+        "detail": "game",
+        "documentation": {}
+    },
+    {
+        "label": "Life",
+        "kind": 6,
+        "importPath": "game",
+        "description": "game",
+        "peekOfCode": "class Life(pygame.sprite.Sprite):\n    def __init__(self):\n        super().__init__()\n        self.image = pygame.transform.scale(life_img, (24, 24))\n        self.rect = self.image.get_rect()\n        self.rect.x = random.randrange(WIDTH - self.rect.width)\n        self.rect.y = random.randrange(-100, -40)\n        self.speed_y = random.randrange(1, 4)\n    def update(self):\n        self.rect.y += self.speed_y",
+        "detail": "game",
+        "documentation": {}
+    },
+    {
+        "label": "create_enemies",
+        "kind": 2,
+        "importPath": "game",
+        "description": "game",
+        "peekOfCode": "def create_enemies():\n    for _ in range(enemy_count):\n        enemy = Enemy()\n        all_sprites.add(enemy)\n        enemies.add(enemy)\n# Função para aumentar a dificuldade\ndef increase_difficulty():\n    global enemy_speed, enemy_count, level\n    enemy_speed += 2\n    enemy_count += 1",
+        "detail": "game",
+        "documentation": {}
+    },
+    {
+        "label": "increase_difficulty",
+        "kind": 2,
+        "importPath": "game",
+        "description": "game",
+        "peekOfCode": "def increase_difficulty():\n    global enemy_speed, enemy_count, level\n    enemy_speed += 2\n    enemy_count += 1\n    level += 1\n# Adicionar inimigos\ncreate_enemies()\n# Função para renderizar texto na tela\ndef draw_text(surface, text, size, x, y, color):\n    font = pygame.font.SysFont(\"couriernew\", size)",
+        "detail": "game",
+        "documentation": {}
+    },
+    {
+        "label": "draw_text",
+        "kind": 2,
+        "importPath": "game",
+        "description": "game",
+        "peekOfCode": "def draw_text(surface, text, size, x, y, color):\n    font = pygame.font.SysFont(\"couriernew\", size)\n    text_surface = font.render(text, True, color)\n    text_rect = text_surface.get_rect()\n    text_rect.topleft = (x, y)\n    surface.blit(text_surface, text_rect)\n# Função para verificar e atualizar o progresso das quests\ndef update_quests(lives_count):\n    global total_score_quest, eliminate_enemies_quest, reach_max_level_quest, consecutive_hits_quest, high_score_quest, consecutive_hits, speed_x_var, ship_update\n    # Quest de pontuação total",
+        "detail": "game",
+        "documentation": {}
+    },
+    {
+        "label": "update_quests",
+        "kind": 2,
+        "importPath": "game",
+        "description": "game",
+        "peekOfCode": "def update_quests(lives_count):\n    global total_score_quest, eliminate_enemies_quest, reach_max_level_quest, consecutive_hits_quest, high_score_quest, consecutive_hits, speed_x_var, ship_update\n    # Quest de pontuação total\n    if score >= 500 and not total_score_quest:\n        lives_count += 1\n        total_score_quest = True\n    # Quest de eliminar inimigos\n    if enemy_dead >= 50 and not eliminate_enemies_quest:\n        player.shoot_multiplier = 0.4\n        eliminate_enemies_quest = True",
+        "detail": "game",
+        "documentation": {}
+    },
+    {
+        "label": "BLACK",
+        "kind": 5,
+        "importPath": "game",
+        "description": "game",
+        "peekOfCode": "BLACK = (0, 0, 0)\nWHITE = (255, 255, 255)\nGREEN = (0, 255, 0)  \nRED = (255, 0, 0)\n# Cor de fundo transparente\nPAUSE_BACKGROUND_COLOR = (0, 0, 0, 1.7)\n# Configurações da janela\nWIDTH = 960\nHEIGHT = 540\nwindow = pygame.display.set_mode((WIDTH, HEIGHT))",
+        "detail": "game",
+        "documentation": {}
+    },
+    {
+        "label": "WHITE",
+        "kind": 5,
+        "importPath": "game",
+        "description": "game",
+        "peekOfCode": "WHITE = (255, 255, 255)\nGREEN = (0, 255, 0)  \nRED = (255, 0, 0)\n# Cor de fundo transparente\nPAUSE_BACKGROUND_COLOR = (0, 0, 0, 1.7)\n# Configurações da janela\nWIDTH = 960\nHEIGHT = 540\nwindow = pygame.display.set_mode((WIDTH, HEIGHT))\npygame.display.set_caption(\"Jogo de Destruir Naves\")",
+        "detail": "game",
+        "documentation": {}
+    },
+    {
+        "label": "GREEN",
+        "kind": 5,
+        "importPath": "game",
+        "description": "game",
+        "peekOfCode": "GREEN = (0, 255, 0)  \nRED = (255, 0, 0)\n# Cor de fundo transparente\nPAUSE_BACKGROUND_COLOR = (0, 0, 0, 1.7)\n# Configurações da janela\nWIDTH = 960\nHEIGHT = 540\nwindow = pygame.display.set_mode((WIDTH, HEIGHT))\npygame.display.set_caption(\"Jogo de Destruir Naves\")\n# Carregamento das imagens",
+        "detail": "game",
+        "documentation": {}
+    },
+    {
+        "label": "RED",
+        "kind": 5,
+        "importPath": "game",
+        "description": "game",
+        "peekOfCode": "RED = (255, 0, 0)\n# Cor de fundo transparente\nPAUSE_BACKGROUND_COLOR = (0, 0, 0, 1.7)\n# Configurações da janela\nWIDTH = 960\nHEIGHT = 540\nwindow = pygame.display.set_mode((WIDTH, HEIGHT))\npygame.display.set_caption(\"Jogo de Destruir Naves\")\n# Carregamento das imagens\ngame_folder = os.path.dirname(os.path.abspath(__file__))",
+        "detail": "game",
+        "documentation": {}
+    },
+    {
+        "label": "PAUSE_BACKGROUND_COLOR",
+        "kind": 5,
+        "importPath": "game",
+        "description": "game",
+        "peekOfCode": "PAUSE_BACKGROUND_COLOR = (0, 0, 0, 1.7)\n# Configurações da janela\nWIDTH = 960\nHEIGHT = 540\nwindow = pygame.display.set_mode((WIDTH, HEIGHT))\npygame.display.set_caption(\"Jogo de Destruir Naves\")\n# Carregamento das imagens\ngame_folder = os.path.dirname(os.path.abspath(__file__))\nimg_folder = os.path.join(game_folder, \"assets\")\nbackground_img = pygame.image.load(",
+        "detail": "game",
+        "documentation": {}
+    },
+    {
+        "label": "WIDTH",
+        "kind": 5,
+        "importPath": "game",
+        "description": "game",
+        "peekOfCode": "WIDTH = 960\nHEIGHT = 540\nwindow = pygame.display.set_mode((WIDTH, HEIGHT))\npygame.display.set_caption(\"Jogo de Destruir Naves\")\n# Carregamento das imagens\ngame_folder = os.path.dirname(os.path.abspath(__file__))\nimg_folder = os.path.join(game_folder, \"assets\")\nbackground_img = pygame.image.load(\n    os.path.join(img_folder, \"background.jpeg\")).convert()\nship_img = pygame.image.load(os.path.join(",
+        "detail": "game",
+        "documentation": {}
+    },
+    {
+        "label": "HEIGHT",
+        "kind": 5,
+        "importPath": "game",
+        "description": "game",
+        "peekOfCode": "HEIGHT = 540\nwindow = pygame.display.set_mode((WIDTH, HEIGHT))\npygame.display.set_caption(\"Jogo de Destruir Naves\")\n# Carregamento das imagens\ngame_folder = os.path.dirname(os.path.abspath(__file__))\nimg_folder = os.path.join(game_folder, \"assets\")\nbackground_img = pygame.image.load(\n    os.path.join(img_folder, \"background.jpeg\")).convert()\nship_img = pygame.image.load(os.path.join(\n    img_folder, \"spaceship.png\")).convert_alpha()",
+        "detail": "game",
+        "documentation": {}
+    },
+    {
+        "label": "window",
+        "kind": 5,
+        "importPath": "game",
+        "description": "game",
+        "peekOfCode": "window = pygame.display.set_mode((WIDTH, HEIGHT))\npygame.display.set_caption(\"Jogo de Destruir Naves\")\n# Carregamento das imagens\ngame_folder = os.path.dirname(os.path.abspath(__file__))\nimg_folder = os.path.join(game_folder, \"assets\")\nbackground_img = pygame.image.load(\n    os.path.join(img_folder, \"background.jpeg\")).convert()\nship_img = pygame.image.load(os.path.join(\n    img_folder, \"spaceship.png\")).convert_alpha()\nenemy_img = pygame.image.load(os.path.join(",
+        "detail": "game",
+        "documentation": {}
+    },
+    {
+        "label": "game_folder",
+        "kind": 5,
+        "importPath": "game",
+        "description": "game",
+        "peekOfCode": "game_folder = os.path.dirname(os.path.abspath(__file__))\nimg_folder = os.path.join(game_folder, \"assets\")\nbackground_img = pygame.image.load(\n    os.path.join(img_folder, \"background.jpeg\")).convert()\nship_img = pygame.image.load(os.path.join(\n    img_folder, \"spaceship.png\")).convert_alpha()\nenemy_img = pygame.image.load(os.path.join(\n    img_folder, \"enemyship.png\")).convert_alpha()\nbullet_img = pygame.image.load(os.path.join(\n    img_folder, \"bullet.png\")).convert_alpha()",
+        "detail": "game",
+        "documentation": {}
+    },
+    {
+        "label": "img_folder",
+        "kind": 5,
+        "importPath": "game",
+        "description": "game",
+        "peekOfCode": "img_folder = os.path.join(game_folder, \"assets\")\nbackground_img = pygame.image.load(\n    os.path.join(img_folder, \"background.jpeg\")).convert()\nship_img = pygame.image.load(os.path.join(\n    img_folder, \"spaceship.png\")).convert_alpha()\nenemy_img = pygame.image.load(os.path.join(\n    img_folder, \"enemyship.png\")).convert_alpha()\nbullet_img = pygame.image.load(os.path.join(\n    img_folder, \"bullet.png\")).convert_alpha()\nbonus_img = pygame.image.load(os.path.join(",
+        "detail": "game",
+        "documentation": {}
+    },
+    {
+        "label": "background_img",
+        "kind": 5,
+        "importPath": "game",
+        "description": "game",
+        "peekOfCode": "background_img = pygame.image.load(\n    os.path.join(img_folder, \"background.jpeg\")).convert()\nship_img = pygame.image.load(os.path.join(\n    img_folder, \"spaceship.png\")).convert_alpha()\nenemy_img = pygame.image.load(os.path.join(\n    img_folder, \"enemyship.png\")).convert_alpha()\nbullet_img = pygame.image.load(os.path.join(\n    img_folder, \"bullet.png\")).convert_alpha()\nbonus_img = pygame.image.load(os.path.join(\n    img_folder, \"bonus.png\")).convert_alpha()",
+        "detail": "game",
+        "documentation": {}
+    },
+    {
+        "label": "ship_img",
+        "kind": 5,
+        "importPath": "game",
+        "description": "game",
+        "peekOfCode": "ship_img = pygame.image.load(os.path.join(\n    img_folder, \"spaceship.png\")).convert_alpha()\nenemy_img = pygame.image.load(os.path.join(\n    img_folder, \"enemyship.png\")).convert_alpha()\nbullet_img = pygame.image.load(os.path.join(\n    img_folder, \"bullet.png\")).convert_alpha()\nbonus_img = pygame.image.load(os.path.join(\n    img_folder, \"bonus.png\")).convert_alpha()\nlife_img = pygame.image.load(os.path.join(\n    img_folder, \"life.png\")).convert_alpha()",
+        "detail": "game",
+        "documentation": {}
+    },
+    {
+        "label": "enemy_img",
+        "kind": 5,
+        "importPath": "game",
+        "description": "game",
+        "peekOfCode": "enemy_img = pygame.image.load(os.path.join(\n    img_folder, \"enemyship.png\")).convert_alpha()\nbullet_img = pygame.image.load(os.path.join(\n    img_folder, \"bullet.png\")).convert_alpha()\nbonus_img = pygame.image.load(os.path.join(\n    img_folder, \"bonus.png\")).convert_alpha()\nlife_img = pygame.image.load(os.path.join(\n    img_folder, \"life.png\")).convert_alpha()\nlife_bonus_img = pygame.image.load(os.path.join(\n    img_folder, \"life-bonus.png\")).convert_alpha()",
+        "detail": "game",
+        "documentation": {}
+    },
+    {
+        "label": "bullet_img",
+        "kind": 5,
+        "importPath": "game",
+        "description": "game",
+        "peekOfCode": "bullet_img = pygame.image.load(os.path.join(\n    img_folder, \"bullet.png\")).convert_alpha()\nbonus_img = pygame.image.load(os.path.join(\n    img_folder, \"bonus.png\")).convert_alpha()\nlife_img = pygame.image.load(os.path.join(\n    img_folder, \"life.png\")).convert_alpha()\nlife_bonus_img = pygame.image.load(os.path.join(\n    img_folder, \"life-bonus.png\")).convert_alpha()\nspeed_bonus_img = pygame.image.load(os.path.join(\n    img_folder, \"speed-bonus.png\")).convert_alpha()",
+        "detail": "game",
+        "documentation": {}
+    },
+    {
+        "label": "bonus_img",
+        "kind": 5,
+        "importPath": "game",
+        "description": "game",
+        "peekOfCode": "bonus_img = pygame.image.load(os.path.join(\n    img_folder, \"bonus.png\")).convert_alpha()\nlife_img = pygame.image.load(os.path.join(\n    img_folder, \"life.png\")).convert_alpha()\nlife_bonus_img = pygame.image.load(os.path.join(\n    img_folder, \"life-bonus.png\")).convert_alpha()\nspeed_bonus_img = pygame.image.load(os.path.join(\n    img_folder, \"speed-bonus.png\")).convert_alpha()\nlife_img = pygame.transform.scale(life_img, (24, 24))\nbackground_img = pygame.transform.scale(background_img, (960, 540))",
+        "detail": "game",
+        "documentation": {}
+    },
+    {
+        "label": "life_img",
+        "kind": 5,
+        "importPath": "game",
+        "description": "game",
+        "peekOfCode": "life_img = pygame.image.load(os.path.join(\n    img_folder, \"life.png\")).convert_alpha()\nlife_bonus_img = pygame.image.load(os.path.join(\n    img_folder, \"life-bonus.png\")).convert_alpha()\nspeed_bonus_img = pygame.image.load(os.path.join(\n    img_folder, \"speed-bonus.png\")).convert_alpha()\nlife_img = pygame.transform.scale(life_img, (24, 24))\nbackground_img = pygame.transform.scale(background_img, (960, 540))\n# Variáveis para as quests\nship_update = False",
+        "detail": "game",
+        "documentation": {}
+    },
+    {
+        "label": "life_bonus_img",
+        "kind": 5,
+        "importPath": "game",
+        "description": "game",
+        "peekOfCode": "life_bonus_img = pygame.image.load(os.path.join(\n    img_folder, \"life-bonus.png\")).convert_alpha()\nspeed_bonus_img = pygame.image.load(os.path.join(\n    img_folder, \"speed-bonus.png\")).convert_alpha()\nlife_img = pygame.transform.scale(life_img, (24, 24))\nbackground_img = pygame.transform.scale(background_img, (960, 540))\n# Variáveis para as quests\nship_update = False\nhigh_score_quest = False\ntotal_score_quest = False",
+        "detail": "game",
+        "documentation": {}
+    },
+    {
+        "label": "speed_bonus_img",
+        "kind": 5,
+        "importPath": "game",
+        "description": "game",
+        "peekOfCode": "speed_bonus_img = pygame.image.load(os.path.join(\n    img_folder, \"speed-bonus.png\")).convert_alpha()\nlife_img = pygame.transform.scale(life_img, (24, 24))\nbackground_img = pygame.transform.scale(background_img, (960, 540))\n# Variáveis para as quests\nship_update = False\nhigh_score_quest = False\ntotal_score_quest = False\nreach_max_level_quest = False\nconsecutive_hits_quest = False",
+        "detail": "game",
+        "documentation": {}
+    },
+    {
+        "label": "life_img",
+        "kind": 5,
+        "importPath": "game",
+        "description": "game",
+        "peekOfCode": "life_img = pygame.transform.scale(life_img, (24, 24))\nbackground_img = pygame.transform.scale(background_img, (960, 540))\n# Variáveis para as quests\nship_update = False\nhigh_score_quest = False\ntotal_score_quest = False\nreach_max_level_quest = False\nconsecutive_hits_quest = False\neliminate_enemies_quest = False\n# Variável para contagem de tiros consecutivos acertados",
+        "detail": "game",
+        "documentation": {}
+    },
+    {
+        "label": "background_img",
+        "kind": 5,
+        "importPath": "game",
+        "description": "game",
+        "peekOfCode": "background_img = pygame.transform.scale(background_img, (960, 540))\n# Variáveis para as quests\nship_update = False\nhigh_score_quest = False\ntotal_score_quest = False\nreach_max_level_quest = False\nconsecutive_hits_quest = False\neliminate_enemies_quest = False\n# Variável para contagem de tiros consecutivos acertados\nconsecutive_hits = 0",
+        "detail": "game",
+        "documentation": {}
+    },
+    {
+        "label": "ship_update",
+        "kind": 5,
+        "importPath": "game",
+        "description": "game",
+        "peekOfCode": "ship_update = False\nhigh_score_quest = False\ntotal_score_quest = False\nreach_max_level_quest = False\nconsecutive_hits_quest = False\neliminate_enemies_quest = False\n# Variável para contagem de tiros consecutivos acertados\nconsecutive_hits = 0\nspeed_x_var = 3\n# Classe para representar a nave",
+        "detail": "game",
+        "documentation": {}
+    },
+    {
+        "label": "high_score_quest",
+        "kind": 5,
+        "importPath": "game",
+        "description": "game",
+        "peekOfCode": "high_score_quest = False\ntotal_score_quest = False\nreach_max_level_quest = False\nconsecutive_hits_quest = False\neliminate_enemies_quest = False\n# Variável para contagem de tiros consecutivos acertados\nconsecutive_hits = 0\nspeed_x_var = 3\n# Classe para representar a nave\nclass Ship(pygame.sprite.Sprite):",
+        "detail": "game",
+        "documentation": {}
+    },
+    {
+        "label": "total_score_quest",
+        "kind": 5,
+        "importPath": "game",
+        "description": "game",
+        "peekOfCode": "total_score_quest = False\nreach_max_level_quest = False\nconsecutive_hits_quest = False\neliminate_enemies_quest = False\n# Variável para contagem de tiros consecutivos acertados\nconsecutive_hits = 0\nspeed_x_var = 3\n# Classe para representar a nave\nclass Ship(pygame.sprite.Sprite):\n    def __init__(self):",
+        "detail": "game",
+        "documentation": {}
+    },
+    {
+        "label": "reach_max_level_quest",
+        "kind": 5,
+        "importPath": "game",
+        "description": "game",
+        "peekOfCode": "reach_max_level_quest = False\nconsecutive_hits_quest = False\neliminate_enemies_quest = False\n# Variável para contagem de tiros consecutivos acertados\nconsecutive_hits = 0\nspeed_x_var = 3\n# Classe para representar a nave\nclass Ship(pygame.sprite.Sprite):\n    def __init__(self):\n        super().__init__()",
+        "detail": "game",
+        "documentation": {}
+    },
+    {
+        "label": "consecutive_hits_quest",
+        "kind": 5,
+        "importPath": "game",
+        "description": "game",
+        "peekOfCode": "consecutive_hits_quest = False\neliminate_enemies_quest = False\n# Variável para contagem de tiros consecutivos acertados\nconsecutive_hits = 0\nspeed_x_var = 3\n# Classe para representar a nave\nclass Ship(pygame.sprite.Sprite):\n    def __init__(self):\n        super().__init__()\n        self.image = pygame.transform.scale(ship_img, (40, 40))",
+        "detail": "game",
+        "documentation": {}
+    },
+    {
+        "label": "eliminate_enemies_quest",
+        "kind": 5,
+        "importPath": "game",
+        "description": "game",
+        "peekOfCode": "eliminate_enemies_quest = False\n# Variável para contagem de tiros consecutivos acertados\nconsecutive_hits = 0\nspeed_x_var = 3\n# Classe para representar a nave\nclass Ship(pygame.sprite.Sprite):\n    def __init__(self):\n        super().__init__()\n        self.image = pygame.transform.scale(ship_img, (40, 40))\n        self.rect = self.image.get_rect()",
+        "detail": "game",
+        "documentation": {}
+    },
+    {
+        "label": "consecutive_hits",
+        "kind": 5,
+        "importPath": "game",
+        "description": "game",
+        "peekOfCode": "consecutive_hits = 0\nspeed_x_var = 3\n# Classe para representar a nave\nclass Ship(pygame.sprite.Sprite):\n    def __init__(self):\n        super().__init__()\n        self.image = pygame.transform.scale(ship_img, (40, 40))\n        self.rect = self.image.get_rect()\n        self.rect.centerx = WIDTH // 2\n        self.rect.bottom = HEIGHT - 10",
+        "detail": "game",
+        "documentation": {}
+    },
+    {
+        "label": "speed_x_var",
+        "kind": 5,
+        "importPath": "game",
+        "description": "game",
+        "peekOfCode": "speed_x_var = 3\n# Classe para representar a nave\nclass Ship(pygame.sprite.Sprite):\n    def __init__(self):\n        super().__init__()\n        self.image = pygame.transform.scale(ship_img, (40, 40))\n        self.rect = self.image.get_rect()\n        self.rect.centerx = WIDTH // 2\n        self.rect.bottom = HEIGHT - 10\n        self.speed_x = 0",
+        "detail": "game",
+        "documentation": {}
+    },
+    {
+        "label": "all_sprites",
+        "kind": 5,
+        "importPath": "game",
+        "description": "game",
+        "peekOfCode": "all_sprites = pygame.sprite.Group()\nenemies = pygame.sprite.Group()\nbullets = pygame.sprite.Group()\nbonuses = pygame.sprite.Group()\nlives = pygame.sprite.Group()\nplayer = Ship()\nall_sprites.add(player)\n# Variáveis de controle do jogo\nscore = 0\nlives_count = 3",
+        "detail": "game",
+        "documentation": {}
+    },
+    {
+        "label": "enemies",
+        "kind": 5,
+        "importPath": "game",
+        "description": "game",
+        "peekOfCode": "enemies = pygame.sprite.Group()\nbullets = pygame.sprite.Group()\nbonuses = pygame.sprite.Group()\nlives = pygame.sprite.Group()\nplayer = Ship()\nall_sprites.add(player)\n# Variáveis de controle do jogo\nscore = 0\nlives_count = 3\nenemy_speed = 10  # Velocidade de queda inicial dos inimigos",
+        "detail": "game",
+        "documentation": {}
+    },
+    {
+        "label": "bullets",
+        "kind": 5,
+        "importPath": "game",
+        "description": "game",
+        "peekOfCode": "bullets = pygame.sprite.Group()\nbonuses = pygame.sprite.Group()\nlives = pygame.sprite.Group()\nplayer = Ship()\nall_sprites.add(player)\n# Variáveis de controle do jogo\nscore = 0\nlives_count = 3\nenemy_speed = 10  # Velocidade de queda inicial dos inimigos\nenemy_count = 3  # Quantidade inicial de inimigos",
+        "detail": "game",
+        "documentation": {}
+    },
+    {
+        "label": "bonuses",
+        "kind": 5,
+        "importPath": "game",
+        "description": "game",
+        "peekOfCode": "bonuses = pygame.sprite.Group()\nlives = pygame.sprite.Group()\nplayer = Ship()\nall_sprites.add(player)\n# Variáveis de controle do jogo\nscore = 0\nlives_count = 3\nenemy_speed = 10  # Velocidade de queda inicial dos inimigos\nenemy_count = 3  # Quantidade inicial de inimigos\nlevel = 1",
+        "detail": "game",
+        "documentation": {}
+    },
+    {
+        "label": "lives",
+        "kind": 5,
+        "importPath": "game",
+        "description": "game",
+        "peekOfCode": "lives = pygame.sprite.Group()\nplayer = Ship()\nall_sprites.add(player)\n# Variáveis de controle do jogo\nscore = 0\nlives_count = 3\nenemy_speed = 10  # Velocidade de queda inicial dos inimigos\nenemy_count = 3  # Quantidade inicial de inimigos\nlevel = 1\nenemy_dead = 0",
+        "detail": "game",
+        "documentation": {}
+    },
+    {
+        "label": "player",
+        "kind": 5,
+        "importPath": "game",
+        "description": "game",
+        "peekOfCode": "player = Ship()\nall_sprites.add(player)\n# Variáveis de controle do jogo\nscore = 0\nlives_count = 3\nenemy_speed = 10  # Velocidade de queda inicial dos inimigos\nenemy_count = 3  # Quantidade inicial de inimigos\nlevel = 1\nenemy_dead = 0\n# Função para criar inimigos",
+        "detail": "game",
+        "documentation": {}
+    },
+    {
+        "label": "score",
+        "kind": 5,
+        "importPath": "game",
+        "description": "game",
+        "peekOfCode": "score = 0\nlives_count = 3\nenemy_speed = 10  # Velocidade de queda inicial dos inimigos\nenemy_count = 3  # Quantidade inicial de inimigos\nlevel = 1\nenemy_dead = 0\n# Função para criar inimigos\ndef create_enemies():\n    for _ in range(enemy_count):\n        enemy = Enemy()",
+        "detail": "game",
+        "documentation": {}
+    },
+    {
+        "label": "lives_count",
+        "kind": 5,
+        "importPath": "game",
+        "description": "game",
+        "peekOfCode": "lives_count = 3\nenemy_speed = 10  # Velocidade de queda inicial dos inimigos\nenemy_count = 3  # Quantidade inicial de inimigos\nlevel = 1\nenemy_dead = 0\n# Função para criar inimigos\ndef create_enemies():\n    for _ in range(enemy_count):\n        enemy = Enemy()\n        all_sprites.add(enemy)",
+        "detail": "game",
+        "documentation": {}
+    },
+    {
+        "label": "enemy_speed",
+        "kind": 5,
+        "importPath": "game",
+        "description": "game",
+        "peekOfCode": "enemy_speed = 10  # Velocidade de queda inicial dos inimigos\nenemy_count = 3  # Quantidade inicial de inimigos\nlevel = 1\nenemy_dead = 0\n# Função para criar inimigos\ndef create_enemies():\n    for _ in range(enemy_count):\n        enemy = Enemy()\n        all_sprites.add(enemy)\n        enemies.add(enemy)",
+        "detail": "game",
+        "documentation": {}
+    },
+    {
+        "label": "enemy_count",
+        "kind": 5,
+        "importPath": "game",
+        "description": "game",
+        "peekOfCode": "enemy_count = 3  # Quantidade inicial de inimigos\nlevel = 1\nenemy_dead = 0\n# Função para criar inimigos\ndef create_enemies():\n    for _ in range(enemy_count):\n        enemy = Enemy()\n        all_sprites.add(enemy)\n        enemies.add(enemy)\n# Função para aumentar a dificuldade",
+        "detail": "game",
+        "documentation": {}
+    },
+    {
+        "label": "level",
+        "kind": 5,
+        "importPath": "game",
+        "description": "game",
+        "peekOfCode": "level = 1\nenemy_dead = 0\n# Função para criar inimigos\ndef create_enemies():\n    for _ in range(enemy_count):\n        enemy = Enemy()\n        all_sprites.add(enemy)\n        enemies.add(enemy)\n# Função para aumentar a dificuldade\ndef increase_difficulty():",
+        "detail": "game",
+        "documentation": {}
+    },
+    {
+        "label": "enemy_dead",
+        "kind": 5,
+        "importPath": "game",
+        "description": "game",
+        "peekOfCode": "enemy_dead = 0\n# Função para criar inimigos\ndef create_enemies():\n    for _ in range(enemy_count):\n        enemy = Enemy()\n        all_sprites.add(enemy)\n        enemies.add(enemy)\n# Função para aumentar a dificuldade\ndef increase_difficulty():\n    global enemy_speed, enemy_count, level",
+        "detail": "game",
+        "documentation": {}
+    },
+    {
+        "label": "running",
+        "kind": 5,
+        "importPath": "game",
+        "description": "game",
+        "peekOfCode": "running = True\nclock = pygame.time.Clock()\n# Define the font\nfont = pygame.font.SysFont(\"couriernew\", 36)\n# Tela de \"Jogar\"\nstart_text = font.render(\"Pressione ESPAÇO para jogar\", True, WHITE)\nstart_rect = start_text.get_rect()\nstart_rect.center = (WIDTH // 2, HEIGHT // 2)\nwindow.blit(start_text, start_rect)\npygame.display.flip()",
+        "detail": "game",
+        "documentation": {}
+    },
+    {
+        "label": "clock",
+        "kind": 5,
+        "importPath": "game",
+        "description": "game",
+        "peekOfCode": "clock = pygame.time.Clock()\n# Define the font\nfont = pygame.font.SysFont(\"couriernew\", 36)\n# Tela de \"Jogar\"\nstart_text = font.render(\"Pressione ESPAÇO para jogar\", True, WHITE)\nstart_rect = start_text.get_rect()\nstart_rect.center = (WIDTH // 2, HEIGHT // 2)\nwindow.blit(start_text, start_rect)\npygame.display.flip()\n# Aguardar pela tecla ESPAÇO para começar o jogo",
+        "detail": "game",
+        "documentation": {}
+    },
+    {
+        "label": "font",
+        "kind": 5,
+        "importPath": "game",
+        "description": "game",
+        "peekOfCode": "font = pygame.font.SysFont(\"couriernew\", 36)\n# Tela de \"Jogar\"\nstart_text = font.render(\"Pressione ESPAÇO para jogar\", True, WHITE)\nstart_rect = start_text.get_rect()\nstart_rect.center = (WIDTH // 2, HEIGHT // 2)\nwindow.blit(start_text, start_rect)\npygame.display.flip()\n# Aguardar pela tecla ESPAÇO para começar o jogo\nstart = False\nwhile not start:",
+        "detail": "game",
+        "documentation": {}
+    },
+    {
+        "label": "start_text",
+        "kind": 5,
+        "importPath": "game",
+        "description": "game",
+        "peekOfCode": "start_text = font.render(\"Pressione ESPAÇO para jogar\", True, WHITE)\nstart_rect = start_text.get_rect()\nstart_rect.center = (WIDTH // 2, HEIGHT // 2)\nwindow.blit(start_text, start_rect)\npygame.display.flip()\n# Aguardar pela tecla ESPAÇO para começar o jogo\nstart = False\nwhile not start:\n    for event in pygame.event.get():\n        if event.type == pygame.QUIT:",
+        "detail": "game",
+        "documentation": {}
+    },
+    {
+        "label": "start_rect",
+        "kind": 5,
+        "importPath": "game",
+        "description": "game",
+        "peekOfCode": "start_rect = start_text.get_rect()\nstart_rect.center = (WIDTH // 2, HEIGHT // 2)\nwindow.blit(start_text, start_rect)\npygame.display.flip()\n# Aguardar pela tecla ESPAÇO para começar o jogo\nstart = False\nwhile not start:\n    for event in pygame.event.get():\n        if event.type == pygame.QUIT:\n            start = True",
+        "detail": "game",
+        "documentation": {}
+    },
+    {
+        "label": "start_rect.center",
+        "kind": 5,
+        "importPath": "game",
+        "description": "game",
+        "peekOfCode": "start_rect.center = (WIDTH // 2, HEIGHT // 2)\nwindow.blit(start_text, start_rect)\npygame.display.flip()\n# Aguardar pela tecla ESPAÇO para começar o jogo\nstart = False\nwhile not start:\n    for event in pygame.event.get():\n        if event.type == pygame.QUIT:\n            start = True\n            running = False",
+        "detail": "game",
+        "documentation": {}
+    },
+    {
+        "label": "start",
+        "kind": 5,
+        "importPath": "game",
+        "description": "game",
+        "peekOfCode": "start = False\nwhile not start:\n    for event in pygame.event.get():\n        if event.type == pygame.QUIT:\n            start = True\n            running = False\n        if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:\n            start = True\n# Variável para controle de pausa\npaused = False",
+        "detail": "game",
+        "documentation": {}
+    },
+    {
+        "label": "paused",
+        "kind": 5,
+        "importPath": "game",
+        "description": "game",
+        "peekOfCode": "paused = False\nwhile running:\n    # Capturar eventos\n    for event in pygame.event.get():\n        if event.type == pygame.QUIT:\n            running = False\n        elif event.type == pygame.KEYDOWN:\n            if event.key == pygame.K_LEFT:\n                player.speed_x = -speed_x_var\n            elif event.key == pygame.K_RIGHT:",
+        "detail": "game",
+        "documentation": {}
+    }
+]
