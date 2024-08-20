@@ -6,7 +6,17 @@ a = Analysis(
     ['game.py'],
     pathex=[''], 
     binaries=[],
-    datas=[],
+    datas=[
+        ('assets/background.jpeg', 'assets'),
+        ('assets/spaceship.png', 'assets'),
+        ('assets/enemyship.png', 'assets'),
+        ('assets/bullet.png', 'assets'),
+        ('assets/bonus.png', 'assets'),
+        ('assets/life.png', 'assets'),
+        ('assets/life-bonus.png', 'assets'),
+        ('assets/speed-bonus.png', 'assets'),
+        # Adicione mais arquivos conforme necessário
+    ],
     hiddenimports=[],  
     hookspath=[],
     hooksconfig={},
@@ -35,7 +45,7 @@ exe = EXE(
     upx_exclude=[],
     runtime_tmpdir=None,
     console=False,  # Modo janela
-    icon='Icone.ico',
+    icon='Icone.ico',  # Certifique-se de que o arquivo 'Icone.ico' esteja disponível
     disable_windowed_traceback=False,
     argv_emulation=False,
     target_arch=None,
